@@ -18,11 +18,6 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
           {/* Left Text Copy */}
           <div className="lg:col-span-7 space-y-6">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#E3F0FF] border border-[#BFDBFE] text-xs font-semibold text-[#0060A8]">
-              <Sparkles className="w-3.5 h-3.5 text-[#1E88E5]" />
-              <span>Marketplace Furnitur Preloved & Vintage Terkurasi</span>
-            </div>
-
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#0B192C] tracking-tight leading-[1.15]">
               Jual-Beli Furnitur Preloved & Vintage Lebih Mudah
             </h1>
@@ -103,9 +98,6 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
                   <div className="text-right">
                     <p className="text-xs text-slate-400 line-through">Rp 4.999.000</p>
                     <p className="font-extrabold text-sm text-[#0B192C]">Rp 2.450.000</p>
-                    <span className="text-[10px] font-semibold text-[#0060A8] bg-[#E3F0FF] px-1.5 py-0.5 rounded-full">
-                      Bisa Nego
-                    </span>
                   </div>
                 </div>
               </div>

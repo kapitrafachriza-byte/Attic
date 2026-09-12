@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Heart, MapPin, Ruler, Truck, Sparkles } from "lucide-react";
+import { Heart, MapPin, Ruler, Truck } from "lucide-react";
 import { ProductItem } from "@/types";
 
 interface ProductCardProps {
@@ -144,24 +144,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           </div>
 
           <div className="flex items-center justify-between mt-2 pt-1">
-            <div className="flex items-center gap-1.5">
-              {product.negotiable ? (
-                <span className="text-[11px] font-semibold text-[#0060A8] bg-[#E3F0FF] px-2 py-0.5 rounded-full">
-                  Bisa Nego
-                </span>
-              ) : (
-                <span className="text-[11px] font-medium text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">
-                  Harga Pas
-                </span>
-              )}
-
-              {product.deepCleanAvailable && (
-                <span className="hidden sm:inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded-full" title="Bisa pesan jasa deep clean">
-                  <Sparkles className="w-2.5 h-2.5" /> Cuci Higienis
-                </span>
-              )}
-            </div>
-
             <div className="flex items-center gap-1 text-[11px] font-medium text-slate-500">
               <Truck className="w-3.5 h-3.5 text-slate-400" />
               <span>{getCargoLabel(product.recommendedCargo)}</span>

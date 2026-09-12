@@ -24,8 +24,6 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
 }) => {
   const [selectedCondition, setSelectedCondition] = useState<string>("all");
   const [selectedCity, setSelectedCity] = useState<string>("all");
-  const [onlyNego, setOnlyNego] = useState<boolean>(false);
-  const [onlyClean, setOnlyClean] = useState<boolean>(false);
   const [sortBy, setSortBy] = useState<string>("popular");
 
   const filteredProducts = useMemo(() => {
@@ -40,14 +38,6 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
       }
       // City filter
       if (selectedCity !== "all" && !item.city.toLowerCase().includes(selectedCity.toLowerCase())) {
-        return false;
-      }
-      // Nego filter
-      if (onlyNego && !item.negotiable) {
-        return false;
-      }
-      // Deep clean filter
-      if (onlyClean && !item.deepCleanAvailable) {
         return false;
       }
       // Search term
@@ -66,17 +56,15 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
       if (sortBy === "price_desc") return b.price - a.price;
       return b.viewsCount - a.viewsCount; // popular
     });
-  }, [products, selectedCategory, selectedCondition, selectedCity, onlyNego, onlyClean, searchTerm, sortBy]);
+  }, [products, selectedCategory, selectedCondition, selectedCity, searchTerm, sortBy]);
 
   const resetFilters = () => {
     onSelectCategory("all");
     setSelectedCondition("all");
     setSelectedCity("all");
-    setOnlyNego(false);
-    setOnlyClean(false);
   };
 
-  const hasActiveFilters = selectedCategory !== "all" || selectedCondition !== "all" || selectedCity !== "all" || onlyNego || onlyClean;
+  const hasActiveFilters = selectedCategory !== "all" || selectedCondition !== "all" || selectedCity !== "all";
 
   return (
     <section id="katalog" className="py-10 bg-[#F8F9FD]/80">
@@ -149,29 +137,6 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
               <option value="Jakarta Utara">Jakarta Utara</option>
               <option value="Tangerang">Tangerang / BSD</option>
             </select>
-
-            {/* Checkbox Pills */}
-            <button
-              onClick={() => setOnlyNego(!onlyNego)}
-              className={`text-xs px-3 py-1.5 rounded-full font-medium transition-all ${
-                onlyNego
-                  ? "bg-[#0060A8] text-white font-semibold"
-                  : "bg-[#F8F9FD] text-slate-600 border border-slate-200 hover:bg-slate-100"
-              }`}
-            >
-              💬 Bisa Nego
-            </button>
-
-            <button
-              onClick={() => setOnlyClean(!onlyClean)}
-              className={`text-xs px-3 py-1.5 rounded-full font-medium transition-all ${
-                onlyClean
-                  ? "bg-emerald-600 text-white font-semibold"
-                  : "bg-[#F8F9FD] text-slate-600 border border-slate-200 hover:bg-slate-100"
-              }`}
-            >
-              ✨ Ada Deep Cleaning
-            </button>
 
             {hasActiveFilters && (
               <button

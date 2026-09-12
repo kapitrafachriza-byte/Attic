@@ -40,24 +40,6 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   return (
     <header className="sticky top-0 z-40 bg-white border-b border-slate-200 shadow-xs">
-      {/* Top Banner: Trust & Escrow Guarantee */}
-      <div className="bg-[#0B192C] text-white text-xs py-1.5 px-4">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <span className="flex items-center text-emerald-400 font-semibold gap-1">
-              <ShieldCheck className="w-3.5 h-3.5" /> Jaminan Rekber 100% Aman
-            </span>
-            <span className="hidden sm:inline text-slate-300">• Dana ditahan di Escrow hingga barang dicek 24 jam</span>
-          </div>
-          <div className="hidden md:flex items-center space-x-4 text-slate-300">
-            <span className="flex items-center gap-1">
-              <Truck className="w-3.5 h-3.5 text-blue-300" /> Kurir Kargo + Helper Jabodetabek
-            </span>
-            <span>Bantuan CS: 08:00 - 22:00 WIB</span>
-          </div>
-        </div>
-      </div>
-
       {/* Main Bar: 72px height */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-[72px] flex items-center justify-between gap-4">
         {/* Logo */}
