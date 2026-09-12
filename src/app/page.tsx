@@ -4,8 +4,10 @@ import React, { useState } from "react";
 import { Navbar } from "@/components/layout/Navbar";
 import { HeroBanner } from "@/components/home/HeroBanner";
 import { CircularSteps } from "@/components/home/CircularSteps";
+import { CategoryFilterPills } from "@/components/catalog/CategoryFilterPills";
 import { ProductGrid } from "@/components/catalog/ProductGrid";
 import { SellerBanner } from "@/components/home/SellerBanner";
+import { ValuePillars } from "@/components/home/ValuePillars";
 import { Footer } from "@/components/layout/Footer";
 import { ProductDetailModal } from "@/components/catalog/ProductDetailModal";
 import { SellerListingModal } from "@/components/seller/SellerListingModal";
@@ -27,7 +29,7 @@ export default function Home() {
 
   const handleAddNewListing = (newProduct: ProductItem) => {
     setProducts([newProduct, ...products]);
-    alert("Iklan furnitur berhasil ditayangkan dan langsung muncul di katalog teratas!");
+    alert("Iklan furnitur berhasil ditayangkan dan langsung muncul di katalog!");
   };
 
   const handleOrderSuccess = (orderData: any) => {
@@ -41,7 +43,7 @@ export default function Home() {
 
   return (
     <main className="min-h-screen flex flex-col bg-white text-slate-900">
-      {/* 1. Global Navigation Bar (72px) */}
+      {/* 1. Global Navigation Bar */}
       <Navbar
         onOpenSellerModal={() => setIsSellerModalOpen(true)}
         searchTerm={searchTerm}
@@ -50,32 +52,39 @@ export default function Home() {
         onSelectCategory={setSelectedCategory}
       />
 
-      {/* 2. Community Hero Banner */}
+      {/* 2. Hero Banner */}
       <HeroBanner
         onStartSelling={() => setIsSellerModalOpen(true)}
         onHowItWorksClick={scrollToHowItWorks}
       />
 
-      {/* 3. 5 Circular Feature Steps ("Cara Pakai Attic") */}
+      {/* 3. Cara Pakai Attic (5 Circular Steps) */}
       <CircularSteps />
 
-      {/* 4. Product Catalog Grid ("Hot Items" & Curated Furniture) */}
+      {/* 4. Horizontal Category Icon Pills */}
+      <CategoryFilterPills
+        selectedCategory={selectedCategory}
+        onSelectCategory={setSelectedCategory}
+      />
+
+      {/* 5. Hot items Catalog Grid */}
       <ProductGrid
         products={products}
         selectedCategory={selectedCategory}
-        onSelectCategory={setSelectedCategory}
         searchTerm={searchTerm}
         onSelectProduct={(product) => setActiveProduct(product)}
-        onQuickCheckout={(product) => setCheckoutProduct(product)}
       />
 
-      {/* 5. Seller Conversion Banner */}
+      {/* 6. Seller Conversion Banner */}
       <SellerBanner onStartSelling={() => setIsSellerModalOpen(true)} />
 
-      {/* 6. Footer */}
+      {/* 7. 4 Value Pillars */}
+      <ValuePillars />
+
+      {/* 8. White Minimalist Footer */}
       <Footer />
 
-      {/* Modals for Complete Frontend Interaction */}
+      {/* Interactive Flow Modals */}
       {activeProduct && (
         <ProductDetailModal
           product={activeProduct}

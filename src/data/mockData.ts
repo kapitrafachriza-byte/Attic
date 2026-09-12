@@ -1,32 +1,31 @@
 import { ProductItem } from "@/types";
 
 export const MOCK_CATEGORIES = [
-  { id: "all", label: "Semua Kategori", count: 24 },
-  { id: "seating", label: "Sofa & Kursi", count: 8 },
-  { id: "tables", label: "Meja & Kerja", count: 6 },
-  { id: "storage", label: "Lemari & Rak", count: 5 },
-  { id: "beds", label: "Kamar & Kasur", count: 3 },
-  { id: "decor", label: "Lampu & Dekor", count: 2 },
+  { id: "all", label: "Semua Furnitur" },
+  { id: "seating", label: "Sofa & Lounge" },
+  { id: "tables", label: "Meja Makan & Kerja" },
+  { id: "storage", label: "Lemari & Rak Buku" },
+  { id: "decor", label: "Lampu & Dekorasi" },
+  { id: "outdoor", label: "Outdoor & Teras" },
 ];
 
 export const MOCK_PRODUCTS: ProductItem[] = [
   {
-    id: "attic-101",
-    title: "Sofa 2-Seater Scandinavian Cream",
+    id: "attic-1",
+    title: "Sofa 2 - Seater Scandinavian Cream",
     brand: "IKEA Landskrona",
     category: "seating",
     conditionTier: "GENTLY_LOVED",
-    conditionLabel: "Mulus 92%",
+    conditionLabel: "Mulus 95%",
     price: 2450000,
-    originalPrice: 4999000,
+    originalPrice: 5200000,
     negotiable: true,
     location: "Kebayoran Baru",
-    city: "Jakarta Selatan",
+    city: "Jaksel",
     imageUrl: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=800&q=80",
     galleryUrls: [
       "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1493663284041-c423e66e1081?auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?auto=format&fit=crop&w=800&q=80"
+      "https://images.unsplash.com/photo-1493663284041-c423e66e1081?auto=format&fit=crop&w=800&q=80"
     ],
     dimensions: {
       length: 164,
@@ -37,17 +36,15 @@ export const MOCK_PRODUCTS: ProductItem[] = [
     },
     flawInfo: {
       hasFlaws: true,
-      description: "Ada noda samar di bantalan duduk kiri bawah akibat kopi, sudah dibersihkan ringan. Busa dan rangka masih sangat padat.",
-      flawImages: [
-        "https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?auto=format&fit=crop&w=600&q=80"
-      ]
+      description: "Pemakaian 6 bulan wajar, busa dan pegas sangat empuk & padat.",
+      flawImages: ["https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?auto=format&fit=crop&w=600&q=80"]
     },
     recommendedCargo: "PICKUP_BOX",
-    viewsCount: 412,
-    likesCount: 38,
+    viewsCount: 512,
+    likesCount: 42,
     seller: {
       id: "sel-01",
-      name: "Dian Sastro",
+      name: "Siska Saraswati",
       avatarUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80",
       rating: 4.9,
       responseTime: "< 15 menit",
@@ -56,21 +53,20 @@ export const MOCK_PRODUCTS: ProductItem[] = [
     deepCleanAvailable: true
   },
   {
-    id: "attic-102",
-    title: "Meja Kerja Ergonomis Solid Teak Wood",
-    brand: "Custom Jepara Studio",
+    id: "attic-2",
+    title: "Meja Kerja Kayu Jati Solid 140cm",
+    brand: "Custom Jepara",
     category: "tables",
     conditionTier: "LIKE_NEW",
-    conditionLabel: "Like New (99%)",
+    conditionLabel: "Like New",
     price: 1850000,
-    originalPrice: 3200000,
-    negotiable: false,
-    location: "BSD City",
-    city: "Tangerang Selatan",
+    originalPrice: 3500000,
+    negotiable: true,
+    location: "Dago",
+    city: "Bandung",
     imageUrl: "https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?auto=format&fit=crop&w=800&q=80",
     galleryUrls: [
-      "https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1507089947368-19c1da9775ae?auto=format&fit=crop&w=800&q=80"
+      "https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?auto=format&fit=crop&w=800&q=80"
     ],
     dimensions: {
       length: 140,
@@ -84,8 +80,8 @@ export const MOCK_PRODUCTS: ProductItem[] = [
       flawImages: []
     },
     recommendedCargo: "VAN",
-    viewsCount: 289,
-    likesCount: 45,
+    viewsCount: 389,
+    likesCount: 56,
     seller: {
       id: "sel-02",
       name: "Budi Santoso",
@@ -97,87 +93,40 @@ export const MOCK_PRODUCTS: ProductItem[] = [
     deepCleanAvailable: false
   },
   {
-    id: "attic-103",
-    title: "Rak Buku Minimalis & Credenza 4 Pintu",
-    brand: "Dekoruma Heim",
-    category: "storage",
-    conditionTier: "GENTLY_LOVED",
-    conditionLabel: "Mulus 88%",
-    price: 1350000,
-    originalPrice: 2890000,
-    negotiable: true,
-    location: "Kelapa Gading",
-    city: "Jakarta Utara",
-    imageUrl: "https://images.unsplash.com/photo-1594614271360-0ed9a573ae08?auto=format&fit=crop&w=800&q=80",
-    galleryUrls: [
-      "https://images.unsplash.com/photo-1594614271360-0ed9a573ae08?auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1595428774223-ef52624120d2?auto=format&fit=crop&w=800&q=80"
-    ],
-    dimensions: {
-      length: 120,
-      width: 40,
-      height: 160,
-      weightKg: 42,
-      isKnockdown: false
-    },
-    flawInfo: {
-      hasFlaws: true,
-      description: "Goresan halus di sisi samping kanan akibat gesekan dinding kamar saat pindahan. Tampak depan mulus total.",
-      flawImages: [
-        "https://images.unsplash.com/photo-1595428774223-ef52624120d2?auto=format&fit=crop&w=600&q=80"
-      ]
-    },
-    recommendedCargo: "PICKUP_BAK",
-    viewsCount: 310,
-    likesCount: 19,
-    seller: {
-      id: "sel-03",
-      name: "Rian Pratama",
-      avatarUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&q=80",
-      rating: 4.8,
-      responseTime: "< 30 menit",
-      verified: true
-    },
-    deepCleanAvailable: false
-  },
-  {
-    id: "attic-104",
-    title: "Armchair Mid-Century Retro Walnut & Fabric Mustard",
-    brand: "Vintage Studio",
+    id: "attic-3",
+    title: "Lounge Armchair & Ottoman Kulit",
+    brand: "Herman Miller Rep",
     category: "seating",
     conditionTier: "VINTAGE_CHARACTER",
-    conditionLabel: "Vintage (Patina Asli)",
-    price: 1600000,
-    originalPrice: 3500000,
+    conditionLabel: "Vintage Original",
+    price: 3100000,
+    originalPrice: 6800000,
     negotiable: true,
-    location: "Tebet",
-    city: "Jakarta Selatan",
+    location: "Gading Serpong",
+    city: "Tangerang",
     imageUrl: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=800&q=80",
     galleryUrls: [
-      "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?auto=format&fit=crop&w=800&q=80"
+      "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=800&q=80"
     ],
     dimensions: {
-      length: 82,
-      width: 78,
-      height: 85,
-      weightKg: 18,
+      length: 85,
+      width: 85,
+      height: 84,
+      weightKg: 32,
       isKnockdown: false
     },
     flawInfo: {
       hasFlaws: true,
-      description: "Patina kayu alami di sandaran tangan, kain pelapis jok asli vintage masih kokoh tanpa sobekan.",
-      flawImages: [
-        "https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?auto=format&fit=crop&w=600&q=80"
-      ]
+      description: "Patina alami pada kulit asli dan kayu walnut mewah.",
+      flawImages: []
     },
-    recommendedCargo: "VAN",
-    viewsCount: 654,
-    likesCount: 92,
+    recommendedCargo: "PICKUP_BAK",
+    viewsCount: 820,
+    likesCount: 110,
     seller: {
-      id: "sel-04",
-      name: "Nadia Utami",
-      avatarUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&q=80",
+      id: "sel-03",
+      name: "Raden Mas",
+      avatarUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&q=80",
       rating: 4.9,
       responseTime: "< 10 menit",
       verified: true
@@ -185,70 +134,26 @@ export const MOCK_PRODUCTS: ProductItem[] = [
     deepCleanAvailable: true
   },
   {
-    id: "attic-105",
-    title: "Meja Makan Bulat 4 Kursi Japandi Style",
-    brand: "Informa Urban",
-    category: "tables",
+    id: "attic-4",
+    title: "Rak Buku Tingkat Industrial Metal...",
+    brand: "Informa Studio",
+    category: "storage",
     conditionTier: "GENTLY_LOVED",
-    conditionLabel: "Mulus 94%",
-    price: 2950000,
-    originalPrice: 6200000,
+    conditionLabel: "Mulus 90%",
+    price: 950000,
+    originalPrice: 2100000,
     negotiable: true,
-    location: "Pondok Indah",
-    city: "Jakarta Selatan",
-    imageUrl: "https://images.unsplash.com/photo-1617806118233-18e1de247200?auto=format&fit=crop&w=800&q=80",
+    location: "Puri Indah",
+    city: "Jakbar",
+    imageUrl: "https://images.unsplash.com/photo-1594614271360-0ed9a573ae08?auto=format&fit=crop&w=800&q=80",
     galleryUrls: [
-      "https://images.unsplash.com/photo-1617806118233-18e1de247200?auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1530018607912-eff2daa1bac4?auto=format&fit=crop&w=800&q=80"
+      "https://images.unsplash.com/photo-1594614271360-0ed9a573ae08?auto=format&fit=crop&w=800&q=80"
     ],
     dimensions: {
-      length: 110,
-      width: 110,
-      height: 76,
-      weightKg: 46,
-      isKnockdown: true
-    },
-    flawInfo: {
-      hasFlaws: true,
-      description: "Minus sangat minim: ada 1 bekas coaster samar di tepi meja, tidak mencolok.",
-      flawImages: [
-        "https://images.unsplash.com/photo-1530018607912-eff2daa1bac4?auto=format&fit=crop&w=600&q=80"
-      ]
-    },
-    recommendedCargo: "PICKUP_BOX",
-    viewsCount: 520,
-    likesCount: 61,
-    seller: {
-      id: "sel-05",
-      name: "Ferry Wijaya",
-      avatarUrl: "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&w=150&q=80",
-      rating: 4.9,
-      responseTime: "< 20 menit",
-      verified: true
-    },
-    deepCleanAvailable: false
-  },
-  {
-    id: "attic-106",
-    title: "Standing Floor Lamp Arc Brass & Marble Base",
-    brand: "Flos Replica Studio",
-    category: "decor",
-    conditionTier: "LIKE_NEW",
-    conditionLabel: "Like New (98%)",
-    price: 890000,
-    originalPrice: 1950000,
-    negotiable: false,
-    location: "Grogol",
-    city: "Jakarta Barat",
-    imageUrl: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=800&q=80",
-    galleryUrls: [
-      "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=800&q=80"
-    ],
-    dimensions: {
-      length: 90,
-      width: 40,
-      height: 185,
-      weightKg: 14,
+      length: 100,
+      width: 35,
+      height: 150,
+      weightKg: 22,
       isKnockdown: true
     },
     flawInfo: {
@@ -256,12 +161,173 @@ export const MOCK_PRODUCTS: ProductItem[] = [
       flawImages: []
     },
     recommendedCargo: "VAN",
-    viewsCount: 184,
-    likesCount: 22,
+    viewsCount: 245,
+    likesCount: 30,
+    seller: {
+      id: "sel-04",
+      name: "Larasati",
+      avatarUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&q=80",
+      rating: 4.8,
+      responseTime: "< 20 menit",
+      verified: true
+    },
+    deepCleanAvailable: false
+  },
+  {
+    id: "attic-5",
+    title: "Meja Makan Marmer Bulat D:110cm",
+    brand: "Castlery Home",
+    category: "tables",
+    conditionTier: "GENTLY_LOVED",
+    conditionLabel: "Mulus 98%",
+    price: 3800000,
+    originalPrice: 8900000,
+    negotiable: true,
+    location: "Pondok Indah",
+    city: "Jaksel",
+    imageUrl: "https://images.unsplash.com/photo-1617806118233-18e1de247200?auto=format&fit=crop&w=800&q=80",
+    galleryUrls: [
+      "https://images.unsplash.com/photo-1617806118233-18e1de247200?auto=format&fit=crop&w=800&q=80"
+    ],
+    dimensions: {
+      length: 110,
+      width: 110,
+      height: 76,
+      weightKg: 55,
+      isKnockdown: true
+    },
+    flawInfo: {
+      hasFlaws: false,
+      flawImages: []
+    },
+    recommendedCargo: "PICKUP_BOX",
+    viewsCount: 630,
+    likesCount: 84,
+    seller: {
+      id: "sel-05",
+      name: "Jonathan Lee",
+      avatarUrl: "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&w=150&q=80",
+      rating: 5.0,
+      responseTime: "< 10 menit",
+      verified: true
+    },
+    deepCleanAvailable: false
+  },
+  {
+    id: "attic-6",
+    title: "Buffet Credenza Walnut Retro 1970s",
+    brand: "Vintage Archival",
+    category: "storage",
+    conditionTier: "VINTAGE_CHARACTER",
+    conditionLabel: "Vintage Rare",
+    price: 4250000,
+    originalPrice: 9500000,
+    negotiable: true,
+    location: "Gubeng",
+    city: "Surabaya",
+    imageUrl: "https://images.unsplash.com/photo-1595428774223-ef52624120d2?auto=format&fit=crop&w=800&q=80",
+    galleryUrls: [
+      "https://images.unsplash.com/photo-1595428774223-ef52624120d2?auto=format&fit=crop&w=800&q=80"
+    ],
+    dimensions: {
+      length: 180,
+      width: 45,
+      height: 78,
+      weightKg: 48,
+      isKnockdown: false
+    },
+    flawInfo: {
+      hasFlaws: true,
+      description: "Kayu walnut asli, engsel original 1970s berfungsi halus.",
+      flawImages: []
+    },
+    recommendedCargo: "ENGKEL",
+    viewsCount: 710,
+    likesCount: 95,
     seller: {
       id: "sel-06",
-      name: "Siti Rahma",
+      name: "Antique Vault",
+      avatarUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&q=80",
+      rating: 4.9,
+      responseTime: "< 15 menit",
+      verified: true
+    },
+    deepCleanAvailable: false
+  },
+  {
+    id: "attic-7",
+    title: "Lampu Lantai Arch Brass Marmer",
+    brand: "Arco Style",
+    category: "decor",
+    conditionTier: "GENTLY_LOVED",
+    conditionLabel: "Mulus 95%",
+    price: 750000,
+    originalPrice: 1600000,
+    negotiable: true,
+    location: "Margonda",
+    city: "Depok",
+    imageUrl: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=800&q=80",
+    galleryUrls: [
+      "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=800&q=80"
+    ],
+    dimensions: {
+      length: 80,
+      width: 35,
+      height: 180,
+      weightKg: 16,
+      isKnockdown: true
+    },
+    flawInfo: {
+      hasFlaws: false,
+      flawImages: []
+    },
+    recommendedCargo: "VAN",
+    viewsCount: 312,
+    likesCount: 38,
+    seller: {
+      id: "sel-07",
+      name: "Tania Putri",
       avatarUrl: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=150&q=80",
+      rating: 4.9,
+      responseTime: "< 5 menit",
+      verified: true
+    },
+    deepCleanAvailable: false
+  },
+  {
+    id: "attic-8",
+    title: "Kursi Kerja Ergonomis Full Mesh",
+    brand: "Sihoo Doro",
+    category: "seating",
+    conditionTier: "LIKE_NEW",
+    conditionLabel: "Like New",
+    price: 1150000,
+    originalPrice: 2400000,
+    negotiable: true,
+    location: "Summarecon",
+    city: "Bekasi",
+    imageUrl: "https://images.unsplash.com/photo-1580481077194-48612f0cfd7f?auto=format&fit=crop&w=800&q=80",
+    galleryUrls: [
+      "https://images.unsplash.com/photo-1580481077194-48612f0cfd7f?auto=format&fit=crop&w=800&q=80"
+    ],
+    dimensions: {
+      length: 65,
+      width: 65,
+      height: 110,
+      weightKg: 19,
+      isKnockdown: true
+    },
+    flawInfo: {
+      hasFlaws: false,
+      flawImages: []
+    },
+    recommendedCargo: "VAN",
+    viewsCount: 480,
+    likesCount: 65,
+    seller: {
+      id: "sel-08",
+      name: "Dimas Anggara",
+      avatarUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80",
       rating: 5.0,
       responseTime: "< 10 menit",
       verified: true
@@ -273,42 +339,55 @@ export const MOCK_PRODUCTS: ProductItem[] = [
 export const HOW_IT_WORKS_STEPS = [
   {
     id: "step-sell",
-    stepNumber: "01",
-    title: "Cara Jualan",
-    desc: "Foto lecet jujur & isi ukuran",
-    icon: "camera",
-    tag: "0% Biaya Tayang"
+    title: "Cara jualan",
+    desc: "Foto & pasang harga",
+    icon: "camera"
   },
   {
     id: "step-buy",
-    stepNumber: "02",
-    title: "Cara Belanja",
-    desc: "Cek dimensi & kondisi real",
-    icon: "shoppingBag",
-    tag: "Deskripsi Terbuka"
+    title: "Cara belanja",
+    desc: "Pilih kurasi terbaik",
+    icon: "shoppingBag"
   },
   {
     id: "step-delivery",
-    stepNumber: "03",
-    title: "Proses Kirim",
-    desc: "Kurir jemput & angkut kargo",
-    icon: "truck",
-    tag: "Tersedia Helper"
+    title: "Proses kirim",
+    desc: "Dijemput dari rumah",
+    icon: "truck"
   },
   {
     id: "step-safety",
-    stepNumber: "04",
     title: "100% Aman",
-    desc: "Garansi rekber & cek 24 jam",
-    icon: "shieldCheck",
-    tag: "Escrow Protection"
+    desc: "Garansi uang kembali",
+    icon: "shieldCheck"
   },
   {
     id: "step-nego",
-    stepNumber: "05",
-    title: "Nego Harga",
-    desc: "Tawar harga nyaman via chat",
-    icon: "messageSquare",
-    tag: "Bisa Nego"
+    title: "Nego harga",
+    desc: "Tawar langsung seller",
+    icon: "messageSquare"
+  }
+];
+
+export const VALUE_PILLARS = [
+  {
+    title: "Kurasi Terpercaya",
+    desc: "Setiap furnitur preloved diverifikasi kondisi, dimensi fisik, dan keasliannya sebelum tayang.",
+    icon: "shieldCheck"
+  },
+  {
+    title: "Pengiriman Aman",
+    desc: "Mitra logistik spesialis furnitur bergaransi dengan penanganan perlindungan ekstra ke pintu Anda.",
+    icon: "truck"
+  },
+  {
+    title: "Rekber Garansi",
+    desc: "Dana diteruskan ke penjual hanya setelah Anda menerima dan menyetujui furnitur sesuai deskripsi.",
+    icon: "shieldLock"
+  },
+  {
+    title: "Gaya Berkelanjutan",
+    desc: "Dukung ekonomi sirkular dan kurangi limbah interior rumah dengan memberi kehidupan kedua.",
+    icon: "recycle"
   }
 ];

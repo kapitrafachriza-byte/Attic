@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Plus, CheckCircle2, Clock, Shield, Truck } from "lucide-react";
+import { CheckCircle2, LayoutGrid, Tag } from "lucide-react";
 
 interface SellerBannerProps {
   onStartSelling?: () => void;
@@ -9,69 +9,57 @@ interface SellerBannerProps {
 
 export const SellerBanner: React.FC<SellerBannerProps> = ({ onStartSelling }) => {
   return (
-    <section className="py-12 bg-white">
+    <section className="py-8 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#EFF4FC] via-[#E3F0FF]/60 to-[#EFF4FC] border border-[#BFDBFE]/60 p-8 sm:p-12 shadow-xs">
-          {/* Subtle decorative background circles */}
-          <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 rounded-full bg-blue-200/20 blur-2xl pointer-events-none"></div>
-          <div className="absolute bottom-0 left-0 -ml-16 -mb-16 w-64 h-64 rounded-full bg-slate-300/20 blur-2xl pointer-events-none"></div>
+        <div className="rounded-3xl bg-[#F0F5FD] border border-[#E0ECFD] p-8 sm:p-10">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
+            {/* Left Copy */}
+            <div className="space-y-4 max-w-2xl">
+              {/* Tag */}
+              <div className="flex items-center gap-1.5 text-xs font-semibold text-[#0060A8]">
+                <LayoutGrid className="w-3.5 h-3.5" />
+                <span>Ruang Lega, Cuan Tambahan</span>
+              </div>
 
-          <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-            <div className="lg:col-span-8 space-y-4">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white text-xs font-bold text-[#0060A8] shadow-2xs border border-blue-100">
-                <Truck className="w-3.5 h-3.5 text-[#1E88E5]" />
-                Solusi Decluttering Mudah di Jabodetabek
-              </span>
-
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#0B192C] tracking-tight">
+              {/* Headline */}
+              <h2 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-[#0B192C] tracking-tight">
                 Punya sofa atau meja yang sudah tidak terpakai?
               </h2>
 
-              <p className="text-sm sm:text-base text-slate-600 max-w-xl leading-relaxed">
-                Ubah furnitur bekas jadi uang tunai tanpa repot angkut sendiri. Kurir kargo rekanan Attic jemput langsung ke unit apartemen atau rumahmu.
+              {/* Subtitle */}
+              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                Foto dari smartphone, pasang harga sendiri, dan kurir rekanan Attic siap menjemput barang berukuran besar langsung dari pintu kamarmu.
               </p>
 
-              {/* Selling Benefits Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 text-xs text-slate-700">
-                <div className="flex items-center gap-2 bg-white/80 backdrop-blur-xs p-3 rounded-xl border border-white/60">
+              {/* Checkmarks */}
+              <div className="flex flex-wrap items-center gap-4 sm:gap-6 pt-1 text-xs text-slate-700">
+                <div className="flex items-center gap-1.5">
                   <CheckCircle2 className="w-4 h-4 text-[#0060A8] shrink-0" />
-                  <div>
-                    <p className="font-bold text-slate-900">0% Biaya Tayang</p>
-                    <p className="text-[11px] text-slate-500">Gratis pasang iklan</p>
-                  </div>
+                  <span className="font-medium">0% Biaya Tayang</span>
                 </div>
-
-                <div className="flex items-center gap-2 bg-white/80 backdrop-blur-xs p-3 rounded-xl border border-white/60">
-                  <Truck className="w-4 h-4 text-[#0060A8] shrink-0" />
-                  <div>
-                    <p className="font-bold text-slate-900">Jemput ke Lokasi</p>
-                    <p className="text-[11px] text-slate-500">Tak perlu sewa pikap sendiri</p>
-                  </div>
+                <div className="flex items-center gap-1.5">
+                  <CheckCircle2 className="w-4 h-4 text-[#0060A8] shrink-0" />
+                  <span className="font-medium">Jemput ke Lokasi</span>
                 </div>
-
-                <div className="flex items-center gap-2 bg-white/80 backdrop-blur-xs p-3 rounded-xl border border-white/60">
-                  <Shield className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <div>
-                    <p className="font-bold text-slate-900">Dana Cair Pasti</p>
-                    <p className="text-[11px] text-slate-500">Langsung ke rekening bank</p>
-                  </div>
+                <div className="flex items-center gap-1.5">
+                  <CheckCircle2 className="w-4 h-4 text-[#0060A8] shrink-0" />
+                  <span className="font-medium">Dana Cair Cepat</span>
                 </div>
               </div>
             </div>
 
-            {/* Right CTA */}
-            <div className="lg:col-span-4 flex flex-col items-start lg:items-end justify-center space-y-2">
+            {/* Right Button */}
+            <div className="flex flex-col items-start lg:items-end justify-center space-y-2 shrink-0">
               <button
                 onClick={onStartSelling}
-                className="w-full sm:w-auto flex items-center justify-center gap-2 px-7 py-4 bg-[#0B192C] hover:bg-[#1A2E4B] text-white font-bold text-sm rounded-full shadow-md hover:shadow-lg transition-all"
+                className="flex items-center justify-center gap-2 px-6 py-3.5 bg-black hover:bg-slate-800 text-white font-bold text-xs sm:text-sm rounded-full shadow-sm transition-all"
               >
-                <Plus className="w-4 h-4" />
+                <Tag className="w-4 h-4" />
                 <span>Pasang Iklan Sekarang — Gratis</span>
               </button>
-              <div className="flex items-center gap-1.5 text-xs text-slate-500 pl-2 lg:pr-2">
-                <Clock className="w-3.5 h-3.5 text-slate-400" />
-                <span>Hanya butuh 2 menit untuk tayang</span>
-              </div>
+              <p className="text-xs text-slate-500 pl-1">
+                Hanya butuh 2 menit untuk tayang
+              </p>
             </div>
           </div>
         </div>
