@@ -1,0 +1,426 @@
+// Prisma Schema for Attic Marketplace
+// Designed according to PRD_Attic_Marketplace.md specification
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// --------------------------------------------------------
+// ENUMS
+// --------------------------------------------------------
+
+enum UserRole {
+  BUYER
+  SELLER
+  ADMIN
+  LOGISTICS_PARTNER
+}
+
+enum ConditionTier {
+  LIKE_NEW
+  GENTLY_LOVED
+  VINTAGE_CHARACTER
+  NEEDS_DIY
+}
+
+enum ListingStatus {
+  DRAFT
+  PENDING_REVIEW
+  ACTIVE
+  IN_ESCROW
+  SOLD
+  ARCHIVED
+}
+
+enum CargoType {
+  VAN
+  PICKUP_BAK
+  PICKUP_BOX
+  ENGKEL
+}
+
+enum OrderStatus {
+  WAITING_PAYMENT
+  PAID_ESCROW
+  PICKUP_SCHEDULED
+  IN_TRANSIT
+  DELIVERED
+  INSPECTION_24H
+  COMPLETED
+  DISPUTED
+  REFUNDED
+  CANCELLED
+}
+
+enum EscrowStatus {
+  HOLDING
+  RELEASED_TO_SELLER
+  FROZEN_DISPUTE
+  REFUNDED_TO_BUYER
+  PARTIAL_SETTLED
+}
+
+enum DisputeReason {
+  DEFECT_NOT_DISCLOSED
+  DAMAGE_IN_TRANSIT
+  WRONG_DIMENSIONS
+  OTHER
+}
+
+enum DisputeStatus {
+  OPEN
+  INVESTIGATING
+  REFUND_FULL
+  PARTIAL_COMPENSATION
+  DISMISSED_RELEASE
+}
+
+enum CleaningStatus {
+  SCHEDULED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+// --------------------------------------------------------
+// USER & ADDRESS MODELS
+// --------------------------------------------------------
+
+model User {
+  id                  String         @id @default(cuid())
+  name                String
+  email               String         @unique
+  passwordHash        String?
+  phoneNumber         String?        @unique
+  phoneVerified       Boolean        @default(false)
+  role                UserRole       @default(BUYER)
+  sellerWalletBalance Float          @default(0.0)
+  avatarUrl           String?
+  
+  // Relations
+  addresses           Address[]
+  listings            Listing[]      @relation("SellerListings")
+  ordersAsBuyer       Order[]        @relation("BuyerOrders")
+  ordersAsSeller      Order[]        @relation("SellerOrders")
+  disputesFiled       DisputeClaim[] @relation("BuyerDisputes")
+  reviewsGiven        ReviewRating[] @relation("ReviewsGiven")
+  reviewsReceived     ReviewRating[] @relation("ReviewsReceived")
+
+  createdAt           DateTime       @default(now())
+  updatedAt           DateTime       @updatedAt
+
+  @@map("users")
+}
+
+model Address {
+  id                  String   @id @default(cuid())
+  userId              String
+  user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  label               String   // e.g. "Apartemen Unit 5B", "Rumah Pribadi"
+  recipientName       String
+  recipientPhone      String
+  fullAddress         String
+  city                String   // Jakarta Selatan, BSD, Depok, dll.
+  district            String?  // Kecamatan
+  postalCode          String?
+  latitude            Float?
+  longitude           Float?
+  
+  // High-Rise & Building Access Parameters (PRD 7.1.4 & 11)
+  isApartment         Boolean  @default(false)
+  floorLevel          Int      @default(1)
+  hasServiceElevator  Boolean  @default(false)
+  staircaseWidthOk    Boolean  @default(true)
+  cargoParkingAccess  Boolean  @default(true)
+  accessNotes         String?  // e.g. "Izin loading dock security lobi tower 2"
+  
+  isDefault           Boolean  @default(false)
+
+  // Reverse relations
+  pickupListings      Listing[] @relation("PickupAddress")
+  deliveryOrders      Order[]   @relation("DeliveryAddress")
+
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  @@map("addresses")
+}
+
+// --------------------------------------------------------
+// CATALOG & LISTING MODELS
+// --------------------------------------------------------
+
+model Category {
+  id          String    @id @default(cuid())
+  name        String    // Sofa & Kursi, Meja & Kerja, etc.
+  slug        String    @unique
+  description String?
+  iconName    String?
+  sortOrder   Int       @default(0)
+  
+  listings    Listing[]
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("categories")
+}
+
+model Listing {
+  id                  String         @id @default(cuid())
+  sellerId            String
+  seller              User           @relation("SellerListings", fields: [sellerId], references: [id], onDelete: Cascade)
+  
+  categoryId          String
+  category            Category       @relation(fields: [categoryId], references: [id])
+  
+  title               String
+  brand               String         // e.g. "IKEA", "Informa", "Vintage / Custom"
+  description         String         @db.Text
+  
+  // Condition Grading (PRD 5 & 7.2.3)
+  conditionTier       ConditionTier  @default(GENTLY_LOVED)
+  conditionLabel      String         // e.g. "Mulus 95%", "Like New"
+  
+  // Physical Dimensions in cm & Weight (PRD 7.2.2 & 11)
+  lengthCm            Float
+  widthCm             Float
+  heightCm            Float
+  weightKg            Float?
+  isKnockdown         Boolean        @default(false)
+  
+  // Financials
+  price               Float
+  originalPrice       Float?
+  negotiable          Boolean        @default(true)
+  
+  // Operational Parameters
+  status              ListingStatus  @default(PENDING_REVIEW)
+  recommendedCargo    CargoType      @default(VAN)
+  viewsCount          Int            @default(0)
+  likesCount          Int            @default(0)
+  deepCleanAvailable  Boolean        @default(false)
+  
+  pickupAddressId     String?
+  pickupAddress       Address?       @relation("PickupAddress", fields: [pickupAddressId], references: [id])
+
+  // Media
+  media               ListingMedia[]
+  orders              Order[]
+
+  createdAt           DateTime       @default(now())
+  updatedAt           DateTime       @updatedAt
+
+  @@map("listings")
+}
+
+model ListingMedia {
+  id                  String   @id @default(cuid())
+  listingId           String
+  listing             Listing  @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  
+  mediaUrl            String
+  isPrimary           Boolean  @default(false)
+  
+  // Mandatory Flaw Disclosure (PRD 7.2.4)
+  isFlawDetail        Boolean  @default(false)
+  flawDescription     String?  @db.Text
+  sortOrder           Int      @default(0)
+
+  createdAt           DateTime @default(now())
+
+  @@map("listing_media")
+}
+
+// --------------------------------------------------------
+// ORDER & ESCROW MODELS
+// --------------------------------------------------------
+
+model Order {
+  id                  String              @id @default(cuid())
+  orderNumber         String              @unique // e.g. "ATC-881920"
+  
+  buyerId             String
+  buyer               User                @relation("BuyerOrders", fields: [buyerId], references: [id])
+  
+  sellerId            String
+  seller              User                @relation("SellerOrders", fields: [sellerId], references: [id])
+  
+  listingId           String
+  listing             Listing             @relation(fields: [listingId], references: [id])
+  
+  addressId           String
+  address             Address             @relation("DeliveryAddress", fields: [addressId], references: [id])
+  
+  // Transparent Cost Breakdown (PRD 6.2 & 13)
+  itemPrice           Float
+  shippingFee         Float
+  helperFee           Float               @default(0.0)
+  deepCleanFee        Float               @default(0.0)
+  escrowProtectionFee Float               @default(25000.0)
+  totalAmount         Float
+  
+  status              OrderStatus         @default(WAITING_PAYMENT)
+  
+  // Sub-system relations
+  escrowHold          EscrowHold?
+  paymentTransaction  PaymentTransaction?
+  logisticsShipment   LogisticsShipment?
+  disputeClaim        DisputeClaim?
+  cleaningTask        CleaningTask?
+  reviewRating        ReviewRating?
+
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
+
+  @@map("orders")
+}
+
+model EscrowHold {
+  id                  String       @id @default(cuid())
+  orderId             String       @unique
+  order               Order        @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  
+  heldAmount          Float
+  status              EscrowStatus @default(HOLDING)
+  
+  // 24-Hour Buyer Inspection Window (PRD 6.4 & 7.5.4)
+  inspectionExpiresAt DateTime?
+  releasedAt          DateTime?
+  autoReleaseJobId    String?
+
+  createdAt           DateTime     @default(now())
+  updatedAt           DateTime     @updatedAt
+
+  @@map("escrow_holds")
+}
+
+model PaymentTransaction {
+  id                  String   @id @default(cuid())
+  orderId             String   @unique
+  order               Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  
+  paymentMethod       String   // VIRTUAL_ACCOUNT_BCA, QRIS, CREDIT_CARD
+  paymentProvider     String   // MIDTRANS, XENDIT
+  transactionStatus   String   // PENDING, SETTLEMENT, EXPIRE, CANCEL
+  paymentReference    String?
+  paidAt              DateTime?
+
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  @@map("payment_transactions")
+}
+
+// --------------------------------------------------------
+// LOGISTICS & CARGO MODELS
+// --------------------------------------------------------
+
+model LogisticsShipment {
+  id                  String          @id @default(cuid())
+  orderId             String          @unique
+  order               Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  
+  vehicleType         CargoType       @default(VAN)
+  providerName        String          @default("LALAMOVE") // LALAMOVE, DELIVEREE, INTERNAL
+  driverName          String?
+  driverPhone         String?
+  helperCount         Int             @default(0)
+  
+  pickupSlotStart     DateTime?
+  pickupSlotEnd       DateTime?
+  
+  proofOfPickupUrl    String?
+  proofOfDeliveryUrl  String?
+  digitalSignatureUrl String?
+  
+  trackingStatus      String          @default("PICKUP_PENDING")
+  events              ShipmentEvent[]
+
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @updatedAt
+
+  @@map("logistics_shipments")
+}
+
+model ShipmentEvent {
+  id                  String            @id @default(cuid())
+  shipmentId          String
+  shipment            LogisticsShipment @relation(fields: [shipmentId], references: [id], onDelete: Cascade)
+  
+  milestone           String            // DRIVER_ASSIGNED, EN_ROUTE_PICKUP, LOADED, IN_TRANSIT, DELIVERED
+  description         String
+  timestamp           DateTime          @default(now())
+
+  @@map("shipment_events")
+}
+
+// --------------------------------------------------------
+// DISPUTE, CLEANING & REVIEWS
+// --------------------------------------------------------
+
+model DisputeClaim {
+  id                  String        @id @default(cuid())
+  orderId             String        @unique
+  order               Order         @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  
+  reporterId          String
+  reporter            User          @relation("BuyerDisputes", fields: [reporterId], references: [id])
+  
+  reason              DisputeReason @default(DEFECT_NOT_DISCLOSED)
+  description         String        @db.Text
+  proofImageUrls      String[]      // JSON / Array of photo URLs
+  
+  resolutionStatus    DisputeStatus @default(OPEN)
+  compensationAmount  Float?
+  mediatorNotes       String?       @db.Text
+  resolvedAt          DateTime?
+
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+
+  @@map("dispute_claims")
+}
+
+model CleaningTask {
+  id                  String         @id @default(cuid())
+  orderId             String         @unique
+  order               Order          @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  
+  partnerName         String?
+  status              CleaningStatus @default(SCHEDULED)
+  scheduledDate       DateTime?
+  completedAt         DateTime?
+  proofPhotoUrl       String?
+
+  createdAt           DateTime       @default(now())
+  updatedAt           DateTime       @updatedAt
+
+  @@map("cleaning_tasks")
+}
+
+model ReviewRating {
+  id                     String   @id @default(cuid())
+  orderId                String   @unique
+  order                  Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  
+  reviewerId             String
+  reviewer               User     @relation("ReviewsGiven", fields: [reviewerId], references: [id])
+  
+  revieweeId             String
+  reviewee               User     @relation("ReviewsReceived", fields: [revieweeId], references: [id])
+  
+  rating                 Int      // 1-5
+  comment                String?  @db.Text
+  conditionAccuracyScore Int?     // 1-5
+  
+  createdAt              DateTime @default(now())
+
+  @@map("review_ratings")
+}
