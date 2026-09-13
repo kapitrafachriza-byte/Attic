@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { X, MapPin, Ruler, ShieldCheck, Truck, Sparkles, MessageSquare, AlertTriangle, Check, User, Heart, Share2 } from "lucide-react";
 import { ProductItem } from "@/types";
 
@@ -19,6 +19,42 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   const [selectedCity, setSelectedCity] = useState("Jakarta Selatan");
   const [offerValue, setOfferValue] = useState("");
   const [isNegoSent, setIsNegoSent] = useState(false);
+  const [cargoRate, setCargoRate] = useState<number | null>(null);
+  const [recommendedVehicle, setRecommendedVehicle] = useState<string>(product?.recommendedCargo || "VAN");
+
+  useEffect(() => {
+    if (!product) return;
+    const currentProduct = product;
+    let isMounted = true;
+    async function calculateCargo() {
+      try {
+        const res = await fetch("/api/cargo/calculate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            lengthCm: currentProduct.dimensions.length,
+            widthCm: currentProduct.dimensions.width,
+            heightCm: currentProduct.dimensions.height,
+            weightKg: currentProduct.dimensions.weightKg || 30,
+            originCity: currentProduct.city,
+            destinationCity: selectedCity,
+            helperCount: 1,
+          }),
+        });
+        const json = await res.json();
+        if (isMounted && json.success && json.data) {
+          setCargoRate(json.data.baseCargoRate);
+          setRecommendedVehicle(json.data.vehicleLabel);
+        }
+      } catch (e) {
+        // Fallback to local rate table silently
+      }
+    }
+    calculateCargo();
+    return () => {
+      isMounted = false;
+    };
+  }, [selectedCity, product]);
 
   if (!product) return null;
 
@@ -30,9 +66,8 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
     }).format(val);
   };
 
-  const images = product.galleryUrls.length > 0 ? product.galleryUrls : [product.imageUrl];
+  const images = product.galleryUrls && product.galleryUrls.length > 0 ? product.galleryUrls : [product.imageUrl];
 
-  // Shipping estimation mock rates
   const shippingEstimates: Record<string, number> = {
     "Jakarta Selatan": 95000,
     "Jakarta Barat": 125000,
@@ -44,7 +79,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
     "Bekasi": 165000
   };
 
-  const estimatedShipping = shippingEstimates[selectedCity] || 120000;
+  const estimatedShipping = cargoRate || shippingEstimates[selectedCity] || 120000;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs overflow-y-auto animate-in fade-in duration-200">
@@ -220,7 +255,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                     <Truck className="w-4 h-4 text-[#0060A8]" /> Simulasi Ongkir Kargo
                   </span>
                   <span className="text-[11px] font-semibold text-slate-600">
-                    Armada: {product.recommendedCargo}
+                    Armada: {recommendedVehicle}
                   </span>
                 </div>
 

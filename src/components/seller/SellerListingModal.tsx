@@ -40,12 +40,13 @@ export const SellerListingModal: React.FC<SellerListingModalProps> = ({
   const [hasServiceElevator, setHasServiceElevator] = useState(true);
   const [price, setPrice] = useState("");
   const [negotiable, setNegotiable] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   if (!isOpen) return null;
 
-  // Take rate calculation (10%)
+  // Take rate calculation (5% Attic marketplace fee per PRD)
   const rawPrice = Number(price) || 0;
-  const platformFee = Math.round(rawPrice * 0.1);
+  const platformFee = Math.round(rawPrice * 0.05);
   const netEarnings = Math.max(0, rawPrice - platformFee);
 
   const formatRupiah = (val: number) => {
@@ -82,55 +83,111 @@ export const SellerListingModal: React.FC<SellerListingModalProps> = ({
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!price || rawPrice < 50000) {
-      alert("Harap masukkan harga jual yang valid");
+      alert("Harap masukkan harga jual yang valid (minimal Rp 50.000)");
       return;
     }
 
-    const newProduct = {
-      id: "attic-" + Date.now(),
-      title,
-      brand: brand || "Custom / Local Studio",
-      category,
-      conditionTier,
-      conditionLabel: conditionTier === "LIKE_NEW" ? "Like New (99%)" : "Mulus 90%",
-      price: rawPrice,
-      originalPrice: rawPrice * 1.5,
-      negotiable,
-      location: "Kec. Kebayoran",
-      city,
-      imageUrl: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=800&q=80",
-      galleryUrls: ["https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=800&q=80"],
-      dimensions: {
-        length: Number(length),
-        width: Number(width),
-        height: Number(height),
-        weightKg: Number(weightKg) || 25,
-        isKnockdown
-      },
-      flawInfo: {
-        hasFlaws: conditionTier !== "LIKE_NEW",
-        description: flawDescription || "Mulus tanpa lecet",
-        flawImages: flawUploaded ? ["https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?auto=format&fit=crop&w=600&q=80"] : []
-      },
-      recommendedCargo: Number(length) > 160 ? "PICKUP_BOX" : "VAN",
-      viewsCount: 1,
-      likesCount: 0,
-      seller: {
-        id: "sel-me",
-        name: "Akun Kamu",
-        avatarUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80",
-        rating: 5.0,
-        responseTime: "< 5 menit",
-        verified: true
-      },
-      deepCleanAvailable: category === "seating" || category === "beds"
-    };
+    setIsSubmitting(true);
+    try {
+      const payload = {
+        title,
+        brand: brand || "Custom / Local Studio",
+        category,
+        conditionTier,
+        price: rawPrice,
+        originalPrice: rawPrice * 1.5,
+        negotiable,
+        location: "Kec. Kebayoran",
+        city,
+        dimensions: {
+          length: Number(length),
+          width: Number(width),
+          height: Number(height),
+          weightKg: Number(weightKg) || 25,
+          isKnockdown,
+        },
+        flawInfo: {
+          hasFlaws: conditionTier !== "LIKE_NEW",
+          description: flawDescription || "Mulus tanpa lecet",
+          flawImages: flawUploaded
+            ? ["https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?auto=format&fit=crop&w=600&q=80"]
+            : [],
+        },
+        images: [
+          "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=800&q=80",
+        ],
+      };
 
-    onSuccess(newProduct);
-    onClose();
+      const res = await fetch("/api/listings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const json = await res.json();
+      if (!res.ok || !json.success) {
+        alert(
+          "Peringatan Verifikasi Kurasi Attic:\n" +
+            (json.errors ? json.errors.join("\n") : json.error || "Gagal memproses iklan.")
+        );
+        setIsSubmitting(false);
+        return;
+      }
+
+      alert(json.message || "Iklan berhasil dikirim ke Meja Moderasi Attic!");
+
+      const newProduct = {
+        id: json.data?.pendingListing?.id || "attic-" + Date.now(),
+        title,
+        brand: brand || "Custom / Local Studio",
+        category: category as any,
+        conditionTier,
+        conditionLabel: conditionTier === "LIKE_NEW" ? "Like New (99%)" : "Mulus 90%",
+        price: rawPrice,
+        originalPrice: rawPrice * 1.5,
+        negotiable,
+        location: "Kec. Kebayoran",
+        city,
+        imageUrl: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=800&q=80",
+        galleryUrls: ["https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=800&q=80"],
+        dimensions: {
+          length: Number(length),
+          width: Number(width),
+          height: Number(height),
+          weightKg: Number(weightKg) || 25,
+          isKnockdown,
+        },
+        flawInfo: {
+          hasFlaws: conditionTier !== "LIKE_NEW",
+          description: flawDescription || "Mulus tanpa lecet",
+          flawImages: flawUploaded
+            ? ["https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?auto=format&fit=crop&w=600&q=80"]
+            : [],
+        },
+        recommendedCargo: (Number(length) > 160 ? "PICKUP_BOX" : "VAN") as any,
+        viewsCount: 1,
+        likesCount: 0,
+        seller: {
+          id: "sel-me",
+          name: "Akun Kamu",
+          avatarUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80",
+          rating: 5.0,
+          responseTime: "< 5 menit",
+          verified: true,
+        },
+        deepCleanAvailable: category === "seating" || category === "beds",
+      };
+
+      onSuccess(newProduct as any);
+      onClose();
+    } catch (err: any) {
+      alert("Terjadi kesalahan jaringan saat mengirim iklan: " + err.message);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -518,11 +575,12 @@ export const SellerListingModal: React.FC<SellerListingModalProps> = ({
           ) : (
             <button
               type="button"
+              disabled={isSubmitting}
               onClick={handleSubmit}
-              className="flex items-center gap-1.5 px-6 py-2.5 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-full shadow-md"
+              className="flex items-center gap-1.5 px-6 py-2.5 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 disabled:bg-emerald-400 rounded-full shadow-md transition-colors"
             >
               <Sparkles className="w-3.5 h-3.5" />
-              <span>Tayangkan Iklan Furnitur</span>
+              <span>{isSubmitting ? "Mengirim ke Meja Kurasi..." : "Tayangkan Iklan Furnitur"}</span>
             </button>
           )}
         </div>
