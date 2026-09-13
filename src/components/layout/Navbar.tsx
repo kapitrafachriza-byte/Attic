@@ -93,13 +93,17 @@ export const Navbar: React.FC<NavbarProps> = ({
           </button>
 
           {/* User Profile Avatar */}
-          <div className="w-8 h-8 rounded-full overflow-hidden border border-slate-200 ml-1 cursor-pointer">
+          <Link
+            href="/login"
+            title="Masuk / Akun Saya"
+            className="w-8 h-8 rounded-full overflow-hidden border border-slate-200 ml-1 hover:ring-2 hover:ring-[#0060A8]/30 transition-all shrink-0 cursor-pointer block"
+          >
             <img
               src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80"
               alt="Profile"
               className="w-full h-full object-cover"
             />
-          </div>
+          </Link>
 
           {/* Mobile Menu Toggle */}
           <button
