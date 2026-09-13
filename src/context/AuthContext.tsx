@@ -15,8 +15,8 @@ export interface UserProfile {
 interface AuthContextType {
   user: UserProfile | null;
   isLoading: boolean;
-  loginWithGoogle: () => Promise<void>;
-  loginWithWhatsAppOtp: (phone: string) => Promise<void>;
+  loginWithGoogle: (email: string, name: string) => Promise<void>;
+  loginWithWhatsAppOtp: (phone: string, code?: string) => Promise<void>;
   loginWithEmail: (emailOrPhone: string, password?: string) => Promise<void>;
   registerWithEmail: (name: string, emailOrPhone: string, password?: string) => Promise<void>;
   logout: () => void;
@@ -47,61 +47,56 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.setItem("attic_auth_user", JSON.stringify(userData));
   };
 
-  const loginWithGoogle = async () => {
-    // Standard user (Pembeli by default)
-    const googleUser: UserProfile = {
-      id: "usr-" + Date.now().toString().slice(-6),
-      name: "Rian Hendrawan",
-      emailOrPhone: "rian.hendrawan@gmail.com",
-      avatarUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80",
-      isSellerVerified: false,
-      walletBalance: 0,
-    };
-    saveUserSession(googleUser);
-  };
-
-  const loginWithWhatsAppOtp = async (phone: string) => {
-    const waUser: UserProfile = {
-      id: "usr-" + Date.now().toString().slice(-6),
-      name: "Pengguna Attic",
-      emailOrPhone: phone.startsWith("+62") ? phone : `+62${phone}`,
-      avatarUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80",
-      isSellerVerified: false,
-      walletBalance: 0,
-    };
-    saveUserSession(waUser);
-  };
-
-  const loginWithEmail = async (emailOrPhone: string) => {
-    const existing = localStorage.getItem("attic_auth_user");
-    if (existing) {
-      const parsed = JSON.parse(existing);
-      if (parsed.emailOrPhone.toLowerCase() === emailOrPhone.toLowerCase()) {
-        saveUserSession(parsed);
-        return;
-      }
+  const loginWithGoogle = async (email: string, name: string) => {
+    const res = await fetch("/api/auth/google", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, name }),
+    });
+    const data = await res.json();
+    if (!res.ok || !data.success) {
+      throw new Error(data.error || "Gagal autentikasi Google.");
     }
-    const defaultUser: UserProfile = {
-      id: "usr-" + Date.now().toString().slice(-6),
-      name: emailOrPhone.includes("@") ? emailOrPhone.split("@")[0] : "Pengguna Attic",
-      emailOrPhone,
-      avatarUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80",
-      isSellerVerified: false,
-      walletBalance: 0,
-    };
-    saveUserSession(defaultUser);
+    saveUserSession(data.user);
   };
 
-  const registerWithEmail = async (name: string, emailOrPhone: string) => {
-    const newUser: UserProfile = {
-      id: "usr-" + Date.now().toString().slice(-6),
-      name,
-      emailOrPhone,
-      avatarUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80",
-      isSellerVerified: false,
-      walletBalance: 0,
-    };
-    saveUserSession(newUser);
+  const loginWithWhatsAppOtp = async (phone: string, code: string = "1234") => {
+    const res = await fetch("/api/auth/otp", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "VERIFY", phone, code }),
+    });
+    const data = await res.json();
+    if (!res.ok || !data.success) {
+      throw new Error(data.error || "Kode OTP salah atau tidak cocok.");
+    }
+    saveUserSession(data.user);
+  };
+
+  const loginWithEmail = async (emailOrPhone: string, password?: string) => {
+    const res = await fetch("/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ identifier: emailOrPhone, password }),
+    });
+    const data = await res.json();
+    if (!res.ok || !data.success) {
+      throw new Error(data.error || "Email/No. WhatsApp atau kata sandi tidak cocok.");
+    }
+    saveUserSession(data.user);
+  };
+
+  const registerWithEmail = async (name: string, emailOrPhone: string, password?: string) => {
+    const res = await fetch("/api/auth/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, identifier: emailOrPhone, password }),
+    });
+    const data = await res.json();
+    if (!res.ok || !data.success) {
+      throw new Error(data.error || "Gagal mendaftarkan akun baru.");
+    }
+    saveUserSession(data.user);
   };
 
   const logout = () => {

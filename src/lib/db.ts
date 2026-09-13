@@ -19,6 +19,7 @@ export interface DBUser {
   name: string;
   email: string;
   phoneNumber?: string;
+  password?: string;
   phoneVerified: boolean;
   role: "BUYER" | "SELLER" | "ADMIN" | "LOGISTICS_PARTNER";
   sellerWalletBalance: number;
@@ -63,6 +64,7 @@ const globalStore = globalThis as unknown as {
   __atticShipments?: ActiveShipment[];
   __atticUsers?: DBUser[];
   __atticOrders?: DBOrder[];
+  __atticOtps?: Record<string, string>;
 };
 
 if (!globalStore.__atticListings) {
@@ -87,6 +89,7 @@ export const SEED_USERS: DBUser[] = [
     name: "Rian Hendrawan",
     email: "rian.buyer@attic.id",
     phoneNumber: "081234567890",
+    password: "password123",
     phoneVerified: true,
     role: "BUYER",
     sellerWalletBalance: 0,
@@ -97,6 +100,7 @@ export const SEED_USERS: DBUser[] = [
     name: "Dian Sastro",
     email: "dian.seller@attic.id",
     phoneNumber: "081298765432",
+    password: "password123",
     phoneVerified: true,
     role: "SELLER",
     sellerWalletBalance: 4850000,
@@ -107,6 +111,7 @@ export const SEED_USERS: DBUser[] = [
     name: "Admin Attic Jabodetabek",
     email: "admin@attic.id",
     phoneNumber: "081100112233",
+    password: "password123",
     phoneVerified: true,
     role: "ADMIN",
     sellerWalletBalance: 0,
@@ -172,6 +177,63 @@ export class AtticDB {
 
   static getUserById(id: string): DBUser | undefined {
     return globalStore.__atticUsers!.find((u) => u.id === id);
+  }
+
+  static findUserByIdentifier(identifier: string): DBUser | undefined {
+    const cleanId = identifier.trim().toLowerCase();
+    const cleanDigits = identifier.replace(/\D/g, "");
+
+    return globalStore.__atticUsers!.find((u) => {
+      if (u.email.toLowerCase() === cleanId) return true;
+      if (u.phoneNumber) {
+        const uDigits = u.phoneNumber.replace(/\D/g, "");
+        if (
+          (cleanDigits.length >= 8 && uDigits === cleanDigits) ||
+          (cleanDigits.length >= 8 && uDigits.endsWith(cleanDigits)) ||
+          (cleanDigits.length >= 8 && cleanDigits.endsWith(uDigits))
+        ) {
+          return true;
+        }
+      }
+      return false;
+    });
+  }
+
+  static createUser(userData: {
+    name: string;
+    email: string;
+    phoneNumber?: string;
+    password?: string;
+    role?: "BUYER" | "SELLER" | "ADMIN";
+  }): DBUser {
+    const newUser: DBUser = {
+      id: `user-${Date.now().toString().slice(-6)}`,
+      name: userData.name,
+      email: userData.email,
+      phoneNumber: userData.phoneNumber,
+      password: userData.password || "password123",
+      phoneVerified: true,
+      role: userData.role || "BUYER",
+      sellerWalletBalance: 0,
+      avatarUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80",
+    };
+    globalStore.__atticUsers!.unshift(newUser);
+    return newUser;
+  }
+
+  static saveOtp(phone: string, otp: string): void {
+    if (!globalStore.__atticOtps) globalStore.__atticOtps = {};
+    const digits = phone.replace(/\D/g, "");
+    globalStore.__atticOtps[digits] = otp;
+  }
+
+  static verifyOtp(phone: string, otp: string): boolean {
+    if (!globalStore.__atticOtps) globalStore.__atticOtps = {};
+    const digits = phone.replace(/\D/g, "");
+    const saved = globalStore.__atticOtps[digits];
+    // Exact OTP match, or master sandbox OTP "1234" in development only
+    const isSandboxBypass = process.env.NODE_ENV !== "production" && otp === "1234";
+    return saved === otp || isSandboxBypass;
   }
 
   static updateSellerWallet(userId: string, deltaAmount: number): number {
