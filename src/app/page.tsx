@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Navbar } from "@/components/layout/Navbar";
 import { HeroBanner } from "@/components/home/HeroBanner";
 import { CircularSteps } from "@/components/home/CircularSteps";
@@ -11,12 +12,16 @@ import { ValuePillars } from "@/components/home/ValuePillars";
 import { Footer } from "@/components/layout/Footer";
 import { ProductDetailModal } from "@/components/catalog/ProductDetailModal";
 import { SellerListingModal } from "@/components/seller/SellerListingModal";
+import { SellerVerificationModal } from "@/components/seller/SellerVerificationModal";
 import { CheckoutModal } from "@/components/checkout/CheckoutModal";
 import { OrderTrackingModal } from "@/components/tracking/OrderTrackingModal";
 import { MOCK_PRODUCTS } from "@/data/mockData";
 import { ProductItem } from "@/types";
+import { useAuth } from "@/context/AuthContext";
 
 export default function Home() {
+  const router = useRouter();
+  const { user } = useAuth();
   const [products, setProducts] = useState<ProductItem[]>(MOCK_PRODUCTS);
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -25,7 +30,20 @@ export default function Home() {
   const [activeProduct, setActiveProduct] = useState<ProductItem | null>(null);
   const [checkoutProduct, setCheckoutProduct] = useState<ProductItem | null>(null);
   const [isSellerModalOpen, setIsSellerModalOpen] = useState(false);
+  const [isSellerVerificationOpen, setIsSellerVerificationOpen] = useState(false);
   const [activeOrder, setActiveOrder] = useState<any | null>(null);
+
+  const handleStartSelling = () => {
+    if (!user) {
+      router.push("/login?redirect=sell");
+      return;
+    }
+    if (!user.isSellerVerified) {
+      setIsSellerVerificationOpen(true);
+      return;
+    }
+    setIsSellerModalOpen(true);
+  };
 
   const handleAddNewListing = (newProduct: ProductItem) => {
     setProducts([newProduct, ...products]);
@@ -45,7 +63,7 @@ export default function Home() {
     <main className="min-h-screen flex flex-col bg-white text-slate-900">
       {/* 1. Global Navigation Bar */}
       <Navbar
-        onOpenSellerModal={() => setIsSellerModalOpen(true)}
+        onOpenSellerModal={handleStartSelling}
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
         selectedCategory={selectedCategory}
@@ -54,7 +72,7 @@ export default function Home() {
 
       {/* 2. Hero Banner */}
       <HeroBanner
-        onStartSelling={() => setIsSellerModalOpen(true)}
+        onStartSelling={handleStartSelling}
         onHowItWorksClick={scrollToHowItWorks}
       />
 
@@ -76,7 +94,7 @@ export default function Home() {
       />
 
       {/* 6. Seller Conversion Banner */}
-      <SellerBanner onStartSelling={() => setIsSellerModalOpen(true)} />
+      <SellerBanner onStartSelling={handleStartSelling} />
 
       {/* 7. 4 Value Pillars */}
       <ValuePillars />
@@ -103,6 +121,17 @@ export default function Home() {
           onOrderSuccess={(orderData) => {
             setCheckoutProduct(null);
             handleOrderSuccess(orderData);
+          }}
+        />
+      )}
+
+      {isSellerVerificationOpen && (
+        <SellerVerificationModal
+          isOpen={isSellerVerificationOpen}
+          onClose={() => setIsSellerVerificationOpen(false)}
+          onVerificationSuccess={() => {
+            setIsSellerVerificationOpen(false);
+            setIsSellerModalOpen(true);
           }}
         />
       )}

@@ -15,6 +15,8 @@ export const metadata: Metadata = {
     "Marketplace furnitur preloved, vintage & refurbished terkurasi dengan jaminan kondisi fisik, proteksi escrow 24 jam, dan kurir kargo on-demand.",
 };
 
+import { ClientProviders } from "@/components/providers/ClientProviders";
+
 export default function RootLayout({
   children,
 }: {
@@ -23,7 +25,7 @@ export default function RootLayout({
   return (
     <html lang="id" className={`${plusJakartaSans.variable} h-full`}>
       <body className="min-h-full flex flex-col font-sans bg-white text-slate-900 antialiased">
-        {children}
+        <ClientProviders>{children}</ClientProviders>
       </body>
     </html>
   );

@@ -1,8 +1,10 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { X, MapPin, Ruler, ShieldCheck, Truck, Sparkles, MessageSquare, AlertTriangle, Check, User, Heart, Share2 } from "lucide-react";
 import { ProductItem } from "@/types";
+import { useAuth } from "@/context/AuthContext";
 
 interface ProductDetailModalProps {
   product: ProductItem | null;
@@ -15,6 +17,8 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   onClose,
   onProceedToCheckout
 }) => {
+  const router = useRouter();
+  const { user } = useAuth();
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [selectedCity, setSelectedCity] = useState("Jakarta Selatan");
   const [offerValue, setOfferValue] = useState("");
@@ -304,7 +308,16 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                     <p className="text-[10px] text-slate-500">Rating {product.seller.rating} ★ • Balas {product.seller.responseTime}</p>
                   </div>
                 </div>
-                <button className="flex items-center gap-1 px-3 py-1.5 rounded-full border border-slate-300 text-xs font-semibold text-slate-700 hover:bg-slate-50">
+                <button
+                  onClick={() => {
+                    if (!user) {
+                      router.push("/login");
+                      return;
+                    }
+                    alert(`Membuka percakapan chat dengan penjual ${product.seller.name}...`);
+                  }}
+                  className="flex items-center gap-1 px-3 py-1.5 rounded-full border border-slate-300 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-colors"
+                >
                   <MessageSquare className="w-3.5 h-3.5 text-[#0060A8]" />
                   <span>Chat</span>
                 </button>
@@ -332,9 +345,13 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                       />
                       <button
                         onClick={() => {
+                          if (!user) {
+                            router.push("/login");
+                            return;
+                          }
                           if (offerValue) setIsNegoSent(true);
                         }}
-                        className="px-4 py-1.5 bg-[#0060A8] text-white rounded-lg text-xs font-semibold hover:bg-blue-700"
+                        className="px-4 py-1.5 bg-[#0060A8] text-white rounded-lg text-xs font-semibold hover:bg-blue-700 transition-colors"
                       >
                         Kirim Tawaran
                       </button>
@@ -346,8 +363,14 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               {/* Main Checkout Action */}
               <div className="pt-2">
                 <button
-                  onClick={() => onProceedToCheckout(product)}
-                  className="w-full py-3.5 bg-[#0B192C] hover:bg-[#1A2E4B] text-white font-bold text-sm rounded-full shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2"
+                  onClick={() => {
+                    if (!user) {
+                      router.push("/login");
+                      return;
+                    }
+                    onProceedToCheckout(product);
+                  }}
+                  className="w-full py-3.5 bg-[#0B192C] hover:bg-[#1A2E4B] text-white font-bold text-sm rounded-full shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 active:scale-99"
                 >
                   <ShieldCheck className="w-4 h-4 text-emerald-400" />
                   <span>Beli Sekarang — Dilindungi Rekber Attic</span>
