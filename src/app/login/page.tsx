@@ -530,11 +530,6 @@ function LoginFormContent() {
                 <p className="text-slate-600">
                   Masukkan 4-digit kode yang dikirim ke <strong>{waPhone || identifier}</strong>:
                 </p>
-                {otpDemoHint && (
-                  <div className="p-2.5 bg-emerald-50 border border-emerald-200 rounded-xl text-[11px] text-emerald-800 font-medium">
-                    💬 Kode OTP Sandbox: <span className="font-extrabold font-mono tracking-widest text-emerald-950">{otpDemoHint}</span> (atau 1234)
-                  </div>
-                )}
                 <div className="flex justify-center gap-2">
                   {[0, 1, 2, 3].map((idx) => (
                     <input
